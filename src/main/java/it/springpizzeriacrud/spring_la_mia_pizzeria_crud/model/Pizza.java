@@ -1,10 +1,13 @@
 package it.springpizzeriacrud.spring_la_mia_pizzeria_crud.model;
 
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -34,6 +37,12 @@ public class Pizza {
     @NotNull
     @Min(value = 0)
     private double prezzo;
+
+    // Relazioni
+    @OneToMany(mappedBy = "pizza")
+    private List<Offer> offers;
+
+
 
     // Costruttori
     // public Pizza(){
@@ -67,6 +76,10 @@ public class Pizza {
         return id;
     }
 
+    public List<Offer> getOffers() {
+        return offers;
+    }
+
 
     // Setters
     public void setId(Integer id) {
@@ -88,6 +101,12 @@ public class Pizza {
         this.prezzo = prezzo;
     }
 
+    public void setOffers(List<Offer> offers) {
+        this.offers = offers;
+    }
+
+
+
     @Override
     public String toString() {
         return "Pizza [id=" + id + ", nome=" + nome + ", descrizione=" + descrizione + ", photoUrl=" + photoUrl
@@ -96,6 +115,10 @@ public class Pizza {
                 + ", getClass()=" + getClass() + ", hashCode()=" + hashCode() + ", toString()=" + super.toString()
                 + "]";
     }
+
+    
+
+    
 
     
     

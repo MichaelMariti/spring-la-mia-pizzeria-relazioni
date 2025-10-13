@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import it.springpizzeriacrud.spring_la_mia_pizzeria_crud.model.Offer;
 import it.springpizzeriacrud.spring_la_mia_pizzeria_crud.model.Pizza;
 import it.springpizzeriacrud.spring_la_mia_pizzeria_crud.repository.PizzaRepository;
 import jakarta.validation.Valid;
@@ -106,32 +107,15 @@ public class PizzaController {
         return "redirect:/pizzas/index";
     }
     
-
-    // @PostMapping("edit/{id}")
-    // public String update(@Valid @ModelAttribute("pizza") Pizza formPizza,
-    // BindingResult bindingResult, Model model) {
-    // if (formPizza.getId() == null) {
-    // // Id mancante, gestisci l'errore
-    // model.addAttribute("error", "ID mancante");
-    // return "/edit"; // oppure redirect a index
-    // }
-
-    // Pizza oldPizza = repository.findById(formPizza.getId()).orElse(null);
-    // if (oldPizza == null) {
-    // // Pizza non trovata nel DB
-    // return "redirect:/pizzas/index";
-    // }
-
-    // if (!oldPizza.getNome().equals(formPizza.getNome())) {
-    // bindingResult.addError(new FieldError("pizza", "nome", "Non puoi modificare il nome!"));
-    // }
-
-    // if (bindingResult.hasErrors()) {
-    // return "/edit";
-    // }
-
-    // repository.save(formPizza);
-    // return "redirect:/pizzas/index";
-    // }
+    // Metodi per offerta speciale pizza
+    @GetMapping("/{id}/offer")
+    public String offer(@PathVariable("id") Integer id, Model model) {
+        Offer offer = new Offer();
+        offer.setPizza(repository.findById(id).get());
+        model.addAttribute("offer", offer);
+        model.addAttribute("editMode", false);
+        return "offers/edit";
+    }
+    
 
 }
