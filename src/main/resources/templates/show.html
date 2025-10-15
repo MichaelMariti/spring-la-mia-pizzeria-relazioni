@@ -34,6 +34,12 @@
                     <dd th:text="*{prezzo}"></dd>
                 </dl>
             </div>
+            <div class="col-4">
+                <h3>Ingredients</h3>
+                <ul>
+                    <li th:each="ing : *{ingredients}" th:text="{ing.ingredients}"></li>
+                </ul>
+            </div>
         </div>
         <div class="row">
             <div class="col-12">

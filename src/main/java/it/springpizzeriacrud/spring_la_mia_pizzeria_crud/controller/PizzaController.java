@@ -19,6 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import it.springpizzeriacrud.spring_la_mia_pizzeria_crud.model.Offer;
 import it.springpizzeriacrud.spring_la_mia_pizzeria_crud.model.Pizza;
+import it.springpizzeriacrud.spring_la_mia_pizzeria_crud.repository.OfferRepository;
 import it.springpizzeriacrud.spring_la_mia_pizzeria_crud.repository.PizzaRepository;
 import jakarta.validation.Valid;
 
@@ -27,8 +28,12 @@ import jakarta.validation.Valid;
 @RequestMapping("/pizzas")
 public class PizzaController {
 
+    
     @Autowired
     private PizzaRepository repository;
+
+    @Autowired
+    private OfferRepository offerRepository;
 
     @GetMapping("/index")
     public String index(@RequestParam(name = "keyword", required = false) String keyword, Model model) {
@@ -103,6 +108,10 @@ public class PizzaController {
 
     @PostMapping("delete/{id}")
     public String delete(@PathVariable("id") Integer id) {
+        Pizza pizza = repository.findById(id).get();
+        for (Offer offerToDelete : pizza.getOffers()) {
+            offerRepository.delete(offerToDelete);
+        }
         repository.deleteById(id);        
         return "redirect:/pizzas/index";
     }
