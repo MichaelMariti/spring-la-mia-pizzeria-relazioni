@@ -24,13 +24,14 @@
                         <input class="form-control" type="text" id="ingredient" th:field="*{ingredient}">
                         <button class="btn btn-primary" type="submit">Add</button>
                         <ul th:if="${#fields.hasErrors('*')}">
-                            <li th:each="err : ${#fields.errors('*')}" th:text="${err}">Input Incorrect</li>
+                            <li th:each="err : ${#fields.hasErrors('*')}" th:text="${err}">Input Incorrect</li>
                         </ul>
                     </div>
                 </form>
                 <ul class="list-group" th:if="${list.size() > 0}">
                     <li class="list-group-item d-flex justify-content-between" th:each="item : ${list}">
-                        <span th:text="${item.ingredients}"></span>
+                        <span th:text="${item.pizzas.size()}"></span>
+                        <span th:text="${item.ingredient}"></span>
                         <form th:action="@{|/ingredients/delete/${item.id}|}" method="post">
                             <button class="btn btn-danger" type="submit" id="deleteButton" onclick="return confirm('Are you sure?')">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"

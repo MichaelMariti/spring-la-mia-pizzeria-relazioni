@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,14 +33,14 @@ public class IngredientController {
     public String create(@Valid @ModelAttribute("ingredientObj") Ingredient ingredient, BindingResult bindingResult,
             Model model) {
         
-        // Ingredient ing = repository.findByIngredient(ingredient.getIngredient());
-        // if (ing == null) {
-        // // se NON esiste un ingrediente con quel nome
-        // } else {
-        // // se esiste
-        // bindingResult.addError(new ObjectError("ingredient", "The ingredient already
-        // exists"));
-        // }
+        Ingredient ing = repository.findByIngredient(ingredient.getIngredient());
+        if (ing == null) {
+        // se NON esiste un ingrediente con quel nome
+        } else {
+        // se esiste
+        bindingResult.addError(new ObjectError("ingredient", "The ingredient already"
+        ));
+        }
 
         if (bindingResult.hasErrors()) {
         model.addAttribute("list", repository.findAll());

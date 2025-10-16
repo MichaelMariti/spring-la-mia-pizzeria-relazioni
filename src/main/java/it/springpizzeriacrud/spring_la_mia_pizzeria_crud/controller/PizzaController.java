@@ -19,21 +19,23 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import it.springpizzeriacrud.spring_la_mia_pizzeria_crud.model.Offer;
 import it.springpizzeriacrud.spring_la_mia_pizzeria_crud.model.Pizza;
+import it.springpizzeriacrud.spring_la_mia_pizzeria_crud.repository.IngredientRepository;
 import it.springpizzeriacrud.spring_la_mia_pizzeria_crud.repository.OfferRepository;
 import it.springpizzeriacrud.spring_la_mia_pizzeria_crud.repository.PizzaRepository;
 import jakarta.validation.Valid;
-
 
 @Controller
 @RequestMapping("/pizzas")
 public class PizzaController {
 
-    
     @Autowired
     private PizzaRepository repository;
 
     @Autowired
     private OfferRepository offerRepository;
+
+    @Autowired
+    private IngredientRepository ingredientRepository;
 
     @GetMapping("/index")
     public String index(@RequestParam(name = "keyword", required = false) String keyword, Model model) {
@@ -62,17 +64,19 @@ public class PizzaController {
     @GetMapping("/create")
     public String create(Model model) {
         model.addAttribute("pizza", new Pizza());
+        model.addAttribute("ingredientList", ingredientRepository.findAll());
         return "/create";
     }
 
     @PostMapping("/create")
     public String save(@Valid @ModelAttribute("pizza") Pizza formPizza, BindingResult bindingResult,
-            RedirectAttributes redirectAttributes) {
+            RedirectAttributes redirectAttributes, Model model) {
         Optional<Pizza> optPizza = repository.findByNome(formPizza.getNome());
         if (optPizza.isPresent()) {
             bindingResult.addError(new FieldError("pizza", "nome", "Nome già presente"));
         }
         if (bindingResult.hasErrors()) {
+            model.addAttribute("ingredientList", ingredientRepository.findAll());
             return "/create";
         }
         repository.save(formPizza);
@@ -84,24 +88,27 @@ public class PizzaController {
     public String edit(@PathVariable("id") Integer id, Model model) {
         Optional<Pizza> optPizza = repository.findById(id);
         Pizza pizza = optPizza.get();
+        model.addAttribute("ingredientList", ingredientRepository.findAll());
         model.addAttribute("pizza", pizza);
         return "/edit";
     }
 
     @PostMapping("edit/{id}")
     public String update(@Valid @ModelAttribute("pizza") Pizza pizza,
-        BindingResult bindingResult) {
+            BindingResult bindingResult, Model model) {
         Integer pizzaId = pizza.getId();
         Pizza oldPizza = repository.findById(pizzaId).get();
 
-        if(!oldPizza.getNome().equals(pizza.getNome())){
+        if (!oldPizza.getNome().equals(pizza.getNome())) {
             bindingResult.addError(new ObjectError("nome", "Non puoi cambiare il nome"));
         }
-        if(bindingResult.hasErrors()) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("ingredientList", ingredientRepository.findAll());
             return "redirect:/pizzas/edit/" + Integer.toString(pizzaId);
         }
 
-        if (!bindingResult.hasErrors()) repository.save(pizza);
+        if (!bindingResult.hasErrors())
+            repository.save(pizza);
 
         return "redirect:/pizzas/index";
     }
@@ -112,10 +119,10 @@ public class PizzaController {
         for (Offer offerToDelete : pizza.getOffers()) {
             offerRepository.delete(offerToDelete);
         }
-        repository.deleteById(id);        
+        repository.deleteById(id);
         return "redirect:/pizzas/index";
     }
-    
+
     // Metodi per offerta speciale pizza
     @GetMapping("/{id}/offer")
     public String offer(@PathVariable("id") Integer id, Model model) {
@@ -125,6 +132,5 @@ public class PizzaController {
         model.addAttribute("editMode", false);
         return "offers/edit";
     }
-    
 
 }

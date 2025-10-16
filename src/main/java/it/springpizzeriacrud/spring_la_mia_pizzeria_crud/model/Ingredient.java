@@ -2,12 +2,13 @@ package it.springpizzeriacrud.spring_la_mia_pizzeria_crud.model;
 
 import java.util.List;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 public class Ingredient {
@@ -16,7 +17,8 @@ public class Ingredient {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotNull
+    @NotBlank(message="L'ingrediente deve avere un nome")
+    @Column(nullable=false, unique=true)
     private String ingredient;
 
     @ManyToMany(mappedBy = "ingredients")
