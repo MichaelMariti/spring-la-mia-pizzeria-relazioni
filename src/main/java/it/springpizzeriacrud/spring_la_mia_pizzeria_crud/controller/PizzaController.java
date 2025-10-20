@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -38,7 +39,7 @@ public class PizzaController {
     private IngredientRepository ingredientRepository;
 
     @GetMapping("/index")
-    public String index(@RequestParam(name = "keyword", required = false) String keyword, Model model) {
+    public String index(@RequestParam(name = "keyword", required = false) String keyword, Model model, Authentication auth) {
         List<Pizza> result = null;
         if (keyword == null || keyword.isBlank()) {
             result = repository.findAll();
@@ -46,6 +47,7 @@ public class PizzaController {
             result = repository.findByNomeContainingIgnoreCase(keyword);
         }
         model.addAttribute("list", result);
+        model.addAttribute("username", auth.getName());
         return "/index";
     }
 

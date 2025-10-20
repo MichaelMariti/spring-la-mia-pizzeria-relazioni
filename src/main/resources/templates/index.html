@@ -23,11 +23,12 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
             </div>
         </th:block>
+        <h3 th:text="|Ciao ${username}|"></h3>
         <h1 class="text-center py-3">Pizzas</h1>
         <hr>
 
         <div class="d-flex justify-content-between mb-3">
-            <a th:href="@{/pizzas/create}" class="btn btn-primary">Add new Pizza</a>
+            <a sec:authorize="hasAuthority('ADMIN')" th:href="@{/pizzas/create}" class="btn btn-primary">Add new Pizza</a>
             <form method="get" th:action="@{/pizzas/index}" class="d-flex">
 
                 <input name="keyword" type="search" class="form-control" placeholder="Search" aria-label="Search">
@@ -49,8 +50,8 @@
                     <th scope="col">Foto</th>
                     <th scope="col">Prezzo</th>
                     <th></th> <!--Mostra dettagli-->
-                    <th></th> <!--Edit Pizza-->
-                    <th></th> <!--Delete Pizza-->
+                    <th sec:authorize="hasAuthority('ADMIN')"></th> <!--Edit Pizza-->
+                    <th sec:authorize="hasAuthority('ADMIN')"></th> <!--Delete Pizza-->
                 </tr>
             </thead>
             <tbody>
@@ -70,7 +71,7 @@
                             </svg>
                         </a>
                     </td>
-                    <td>
+                    <td sec:authorize="hasAuthority('ADMIN')">
                         <a th:href="@{/pizzas/edit/{id}(id=${item.id})}" class="btn btn-primary">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                 class="bi bi-pencil" viewBox="0 0 16 16">
@@ -79,7 +80,7 @@
                             </svg>
                         </a>
                     </td>
-                    <td>
+                    <td sec:authorize="hasAuthority('ADMIN')">
                         <form th:action="@{'delete/{id}'(id=${item.id})}" method="post">
                             <button class="btn btn-danger" type="submit" id="submitButton" onclick="return confirm('Sicuro di voler procedere?')">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
